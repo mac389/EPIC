@@ -1,2 +1,4 @@
-# EPIC
-Code Repository for EPIC 2015
+EPIC
+====
+
+  Supporting material for Natural Language Processing: Applications in Epidemiology
