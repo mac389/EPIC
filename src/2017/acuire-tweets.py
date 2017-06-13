@@ -10,16 +10,17 @@ api = TwitterAPI(keys['consumer_key'], keys['consumer_secret'],
 				keys['access_token'], keys['access_token_secret'])
 
 query = 'aids'
-timestamp = '%Y-%m-%d %H:%M:%S'.format(datetime.datetime.now())
+timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 outfile = '../../data/%s-%s'%(query,timestamp)
 r = api.request('search/tweets', {'q':'aids'})
 
 with open(outfile,'wb') as outfile:
 	for item in r:
-        print(item)
-        json.dump(item,outfile)
+		print>>outfile,item
+		#json.dump(item,outfile)
 
-
+'''
 r = api.request('statuses/filter', {'locations':'-74,40,-73,41'})
 for item in r:
-        print(item)
+		print(item)
+'''
