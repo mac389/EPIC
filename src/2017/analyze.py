@@ -1,49 +1,68 @@
-import json, ast, itertools
+import ast
 from collections import Counter
 from pprint import pprint 
-tweets = open('../../data/aids-test2.json').read().splitlines()
 
-#AST
+#Load tweets 
+tweets = open('../../data/aids-test2.json','rb').read().splitlines()
+'''
+  Tweets is a list of strings. 
+  Each string is a JSON object
+'''
 
-#For-loop
+#Convert strings to JSON using ast
+tweets = map(ast.literal_eval,tweets)
+print tweets
+
+'''
+#Alternates 
+tweets = [ast.literal_eval(tweet) for tweet in tweets]
+
+#In explicit for-loop
 formatted_tweets = []
 for tweet in tweets:
 	formatted_tweets.append(ast.literal_eval(tweet))
 
 print formatted_tweets
+'''
 
-#List comprehension
-f_tweets = [ast.literal_eval(tweet) 
-				for tweet in tweets]
+texts = [tweet['text'] for tweet in tweets]
 
-texts = [tweet['text'] for tweet in f_tweets]
+def extract_by_character(maker_character,text):
+	#Assumes tweets are passed as list of strings
+	return [word for word in text.split()]
+					if maker_character in word]
+					
+def extract_entities(text):
+	return extract_by_character('@',text)
 
-entities = [[word for word in text.split()
-				if '@' in word] 
-			for text in texts]
+def extract_hashtags(text):
+	return extract_by_character('#',text)
+
+entities = map(extract_entities,texts)
+#Equivalent to
+# entities = [extract_entities[text] for text in texts]
+hashtags = map(extract_hashtags,texts)
+#Equivalent to
+# hashtags = [extract_hashtags[text] for text in texts]
 
 text_only = []
 for i,text in enumerate(texts):
 	text_only.append([word for word in text.split()
-						if word not in entities[i]])
+						if word not in entities[i]
+						and if word not in hashtags[i]])
 
-print text_only
+
+'''
+#Alternate
+ for text,hashtag,entity_list in zip(texts, hashtags, entities):
+ 	exluded = hashtags + entities
+ 	text_only.append([word for word in text.split() 	
+ 						if word not in exluded])
+'''
+
+#Flatten list of list of tokens to list of tokens
 x = list(itertools.chain.from_iterable(text_only))
+
+#Count tokens
 z = dict(Counter(x))
 pprint(z)
-'''
-for entity_list,text in zip(entities,texts):
-	text_only.append([word for word in text.split()
-					if word not in entity_list])
-'''
-''
-#json.dump(f_tweets,open('test.json','wb'))
-#JSON
-'''
-tweets = [json.loads(json.dumps(tweet)) for tweet in tweets]
-print tweets
-
-json.dump(tweets,open('test.json','wb'))
-
-dct = json.load(open('test.json','rb'))
-'''
