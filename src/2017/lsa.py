@@ -1,12 +1,8 @@
 import ast, gensim
 from gensim import corpora 
 
-tweets = map(ast.literal_eval,
-			open('../../data/aids-test2.json','rb').read().splitlines())
-
-texts = [tweet['text'] for tweet in tweets]
-
-
+texts = [line.split() for line in 
+			open('../../data/processed.txt','rb').read().splitlines()]
 
 dictionary = corpora.Dictionary(texts)
 corpus = [dictionary.doc2bow(text) 
