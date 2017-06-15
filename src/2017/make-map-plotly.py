@@ -5,6 +5,7 @@ import plotly.graph_objs as graph_objs
 
 DATA_PATH = '../../data'
 NYC_map_file = os.path.join(DATA_PATH,'map.geo.json')
+activity = os.path.join(DATA_PATH,'NYC-activity.json')
 
 NYC_map = json.load(open(NYC_map_file,'rb'))
 mapbox_access_token = json.load(open(os.path.join(DATA_PATH,'directory.json'),'rb'))['mapbox']
@@ -28,6 +29,12 @@ layout = graph_objs.Layout(
                 source = NYC_map_file,
                 type = 'fill',
                 color = 'rgba(163,22,19,0.8)'
+            ),
+            dict(
+                sourcetype = 'geojson',
+                source = activity,
+                type = 'fill',
+                color = 'rgba(40,0,113,0.8)'
             )
         ],
         accesstoken=mapbox_access_token,
@@ -37,7 +44,7 @@ layout = graph_objs.Layout(
             lon=-74.0059
         ),
         pitch=0,
-        zoom=12.5,
+        zoom=11.25,
         style='light'
     ),
 )
