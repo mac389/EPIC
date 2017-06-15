@@ -2,6 +2,7 @@ import ast, nltk, itertools
 from collections import Counter
 from pprint import pprint 
 from nltk.corpus import wordnet
+from langdetect import detect
 
 def get_wordnet_pos(treebank_tag):
 
@@ -15,6 +16,8 @@ def get_wordnet_pos(treebank_tag):
         return wordnet.ADV
     else:
         return wordnet.NOUN
+
+#{lambda tag:tag.startswith('J'):wordnet.ADJ}       
 #Load tweets 
 tweets = open('../../data/aids-test2.json','rb').read().splitlines()
 stopwords = open('../../data/stopwords','rb').read().splitlines()
@@ -25,6 +28,7 @@ stopwords = open('../../data/stopwords','rb').read().splitlines()
 
 #Convert strings to JSON using ast
 tweets = map(ast.literal_eval,tweets)
+#tweets = [ast.literal_eval(tweet) for tweet in tweets]
 #print tweets
 
 '''
@@ -39,21 +43,28 @@ for tweet in tweets:
 print formatted_tweets
 '''
 
-texts = [tweet['text'] for tweet in tweets]
+texts = [tweet['text'] for tweet in tweets
+			if detect(tweet['text']) == 'en']
 
 def extract_by_character(maker_character,text):
 	#Assumes tweets are passed as list of strings
 	return [word for word in text.split()
 					if maker_character in word]
-					
+	'''
+	return [word for word in text.split()
+				if word.startswith(maker_character)]
+	'''
 def extract_entities(text):
 	return extract_by_character('@',text)
 
 def extract_hashtags(text):
 	return extract_by_character('#',text)
 
+def extract_urls(text):
+	return extract_by_character('https://',text)
+
 def save_special_items(moniker,list_of_lists):
-	with open('../../data/%s.txt','wb') as outfile:
+	with open('../../data/%s.txt'%moniker,'wb') as outfile:
 		for lst in list_of_lists:
 			print>>outfile, ' '.join(lst).encode('utf-8')
 
@@ -63,7 +74,7 @@ def save_entities(list_of_lists):
 def save_hashtags(list_of_lists):
 	return save_special_items('hashtags',list_of_lists)
 
-
+urls = map(extract_urls,texts)
 entities = map(extract_entities,texts)
 #Equivalent to
 # entities = [extract_entities[text] for text in texts]
@@ -83,7 +94,8 @@ text_only = []
 for i,text in enumerate(texts):
 	text_only.append([word for word in text.split()
 						if word not in entities[i]
-						and word not in hashtags[i]])
+						and word not in hashtags[i]
+						and word not in urls[i]])
 
 '''
 #Alternate
@@ -108,11 +120,17 @@ x = list(itertools.chain.from_iterable(text_only))
 with open('../../data/processed.txt','wb') as outfile:
 	for tweet in text_only:
 		processed_tweet = []
-		as_string = ' '.join(tweet).lower()
+		as_string = ' '.join([token.lower() if 'AIDS' not in token else token for token in tweet ]) 
+		#as_string = ' '.join(tweet).lower()
 		for word, tag in nltk.pos_tag(nltk.word_tokenize(as_string)):
+			'''
+				as_string = "bob has"
+				word_tokenize => ["bob","has"]
+				pos_tag => [("bob","noun"),("has","verb")]
+			'''
 			#For better tokenizing use regular expressions
 			#Control side effects
 			processed_tweet.append(nltk.stem.WordNetLemmatizer().lemmatize(word,get_wordnet_pos(tag)))
 		processed_tweet = [token for token in processed_tweet if token not in stopwords]
-		print processed_tweet
+		#print processed_tweet
 		print>>outfile,' '.join(processed_tweet).encode('utf-8')
