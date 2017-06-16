@@ -206,14 +206,16 @@ grammar = nltk.CFG.fromstring("""
 	VP -> ADV V
 	VP -> V ADV
 	NP -> NP PP
+	NP -> NP Conj NP 
 	PP -> PREP N
 	PP -> PREP Det N
 	NP -> N
 	NP -> Det N
 	NP -> Det ADJ N
 	NP -> ADJ N
+	Conj -> 'and' | 'And' | 'but' | 'But'
 	PREP -> 'that' | 'pharmacological' | 'if' | 'at' | 'if' | 'in' | 'of' | 'for' | 'with' | 'that' | 'of' | 'with' | 'by' | 'of' | 'if' | 'at' | 'of' | 'that' | 'for' | 'of' | 'with' | 'if' | 'in'
-	Det -> any' | 'the' | 'a' | 'a' | 'a' | 'the' | 'a' | 'a' | 'Some' | 'these' | 'a' | 'a' | 'these' | 'a' | 'all' | 'a' | 'The' | 'this' | 'a' | 'a' | 'the' | 'a' | 'a' | 'an' | 'a' | 'the' | 'the' | 'a' | 'these' | 'a' | 'a' | 'the' | 'a' | 'an' | 'a' | 'a' | 'a' | 'the' | 'the' | 'the' | 'a' | 'a' | 'some' | 'a
+	Det -> 'any' | 'the' | 'a' | 'the' | 'a' | 'a' | 'Some' | 'these' | 'a' | 'a' | 'these' | 'a' | 'all' | 'a' | 'The' | 'this' | 'a' | 'a' | 'the' | 'a' | 'a' | 'an' | 'a' | 'the' | 'the' | 'a' | 'these' | 'a' | 'a' | 'the' | 'a' | 'an' | 'a' | 'a' | 'a' | 'the' | 'the' | 'the' | 'a' | 'a' | 'some' | 'a'
 	V -> 'was' | 'find' | 'have' | 'been' | 'explored' | 'know' | 'have' | 'say' | 'were' | 'halogenated' | 'are' | 'think' | 'are' | 'are' | 'are' | 'isopropylamine' | 'exploring' | 'is' | 'is' | 'substituted' | 'is' | 'increased' | 'happen' | 'were' | 'do' | 'expect' | 'are' | 'be' | 'rewarding' | 'is' | 'is' | 'rearranged' | 'TEA' | 'is' | 'increased' | 'are' | 'diminished' | 'is' | 'be'
 	N -> 'indication' | '4,5-dimethoxy-2-substituted-phenethylamines' | 'Anyone' | 'guesses' | 'potency' | 'effect' | 'position' | 'Thank' | 'substitution' | 'patterns' | 'inquiry' | 'comparison' | 'reasoning' | 'avenue' | 'position' | 'TMA-2' | 'halogen' | 'potency' | 'order' | 'magnitude' | 'So' | 'change' | 'position' | 'course' | 'modifications' | 'indicates' | 'substitution' | 'avenue' | 'amphetamine' | 'mescaline' | 'potency' | 'richness' | 'effects' | 'effects' | 'potent' | 'theory'
 	ADV -> 'not' | 'not' | 'probably' | 'not' | 'Perhaps' | 'not' | 'not' | 'Also' | 'not' | 'yet' | 'so' | 'not' | 'only'
